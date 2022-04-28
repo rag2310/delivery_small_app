@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:delivery_small_app/login/models/models.dart';
@@ -17,6 +15,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginUsernameChanged>(_onUsernameChanged);
     on<LoginPasswordChanged>(_onPasswordChanged);
     on<LoginSubmitted>(_onSubmitted);
+    on<LoginRegister>(_toRegister);
   }
 
   final AuthenticationRepository _authenticationRepository;
@@ -48,5 +47,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         emit(state.copyWith(status: FormzStatus.submissionFailure));
       }
     }
+  }
+
+  void _toRegister(LoginRegister event, Emitter<LoginState> emit) async {
+    print('toRegister\n');
+    emit(state.copyWith(navigationStatus: NavigationStatus.navigateToRegister));
   }
 }

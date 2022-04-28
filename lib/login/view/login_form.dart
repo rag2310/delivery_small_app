@@ -1,4 +1,5 @@
 import 'package:delivery_small_app/login/bloc/login_bloc.dart';
+import 'package:delivery_small_app/register/view/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
@@ -16,6 +17,9 @@ class LoginForm extends StatelessWidget {
             ..showSnackBar(
                 const SnackBar(content: Text("Authentication Failure")));
         }
+        if (state.navigationStatus == NavigationStatus.navigateToRegister) {
+          Navigator.of(context).push(RegisterPage.route());
+        }
       },
       child: Align(
         alignment: const Alignment(0, -1 / 3),
@@ -26,7 +30,9 @@ class LoginForm extends StatelessWidget {
             const Padding(padding: EdgeInsets.all(12)),
             _PasswordInput(),
             const Padding(padding: EdgeInsets.all(12)),
-            _LoginButton()
+            _LoginButton(),
+            const Padding(padding: EdgeInsets.all(12)),
+            _RegisterButton()
           ],
         ),
       ),
@@ -92,6 +98,24 @@ class _LoginButton extends StatelessWidget {
                       }
                     : null,
               );
+      },
+    );
+  }
+}
+
+class _RegisterButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LoginBloc, LoginState>(
+      buildWhen: (previous, current) =>
+          previous.navigationStatus != current.navigationStatus,
+      builder: (context, state) {
+        return ElevatedButton(
+            key: const Key('loginForm_register_raisedButton'),
+            onPressed: () {
+              context.read<LoginBloc>().add(const LoginRegister());
+            },
+            child: const Text('Register'));
       },
     );
   }

@@ -13,8 +13,10 @@ class AuthenticationRepository {
 
   Future<void> logIn(
       {required String username, required String password}) async {
-    await Future.delayed(const Duration(microseconds: 300),
-        () => _controller.add(AuthenticationStatus.authenticated));
+    try {
+      await Future.delayed(const Duration(microseconds: 300),
+          () => _controller.add(AuthenticationStatus.authenticated));
+    } catch (_) {}
   }
 
   void logOut() async {

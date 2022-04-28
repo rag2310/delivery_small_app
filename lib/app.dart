@@ -2,6 +2,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:delivery_small_app/splash/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:register_repository/register_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
 import 'authentication/authentication.dart';
@@ -9,26 +10,34 @@ import 'home/home.dart';
 import 'login/login.dart';
 
 class App extends StatelessWidget {
-  const App({
-    Key? key,
-    required this.authenticationRepository,
-    required this.userRepository,
-  }) : super(key: key);
+  const App(
+      {Key? key,
+      required this.authenticationRepository,
+      required this.userRepository,
+      required this.registerRepository})
+      : super(key: key);
 
   final AuthenticationRepository authenticationRepository;
   final UserRepository userRepository;
+  final RegisterRepository registerRepository;
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: authenticationRepository,
-      child: BlocProvider(
-        create: (_) => AuthenticationBloc(
-            authenticationRepository: authenticationRepository,
-            userRepository: userRepository),
-        child: const AppView(),
-      ),
-    );
+    return MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider(create: (context) => authenticationRepository),
+          RepositoryProvider(create: (context) => registerRepository)
+        ],
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (_) => AuthenticationBloc(
+                  authenticationRepository: authenticationRepository,
+                  userRepository: userRepository),
+            )
+          ],
+          child: const AppView(),
+        ));
   }
 }
 
